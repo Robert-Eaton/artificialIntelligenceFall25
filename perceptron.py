@@ -1,6 +1,24 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+
+data = np.loadtxt("groupA.txt", delimiter=",")
+x = data[:, :2]
+y= data[:,2].astype(int)
+
+rng = np.random.default_rng(42)
+idx = rng.permutation(len(x))
+cut = int(.75 * len(x))
+train_idx, test_idx = idx[:cut], idx[cut:]
+
+x_train, y_train = x[train_idx], y[train_idx]
+x_test, y_test = x[test_idx], y[test_idx]
+
+np.savetxt("train.txt", np.column_stack((x_train, y_train)), fmt="%.6f", delimiter=",")
+np.savetxt("test.txt", np.column_stack((x_test, y_test)), fmt="%.6f", delimiter=",")
+
+
+
 def plot_decision_planes(weights_history, patterns, labels, step=1):
     fig = plt.figure(figsize=(10,7))
     ax = fig.add_subplot(111, projection='3d')
@@ -23,7 +41,7 @@ def plot_decision_planes(weights_history, patterns, labels, step=1):
             continue  # skip vert planes
         Z = -(w[0]*X + w[1]*Y) / w[2]
         color = cmap(j / max(n-1, 1))
-        ax.plot_surface(X, Y, Z, alpha=0.25, linewidth=0, color=color, antialiased=False)
+        ax.plot_surface(X, Y, Z, alpha=0.15, linewidth=0, color=color, antialiased=False)
 
     ax.set_xlabel("x1")
     ax.set_ylabel("x2")
